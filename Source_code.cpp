@@ -7,7 +7,7 @@
 using namespace std;
 const int ROWS = 8;
 const int COLS = 8;
-const char HUMAN_PLAYER = 'X'; const char COMPUTER_PLAYER = 'O'; const char COMPUTER2_PLAYER = 'X';
+const char HUMAN_PLAYER = 'X'; const char HUMAN2_PLAYER = 'O'; const char COMPUTER_PLAYER = 'O'; const char COMPUTER2_PLAYER = 'X';
 struct best {
 	int row;
 	int coloumn;
@@ -41,43 +41,7 @@ public:
 	}
 
 
-	void readFile() {
-		ifstream file;
-		file.open("board.txt");
-		std::string str;
-		int i = 1;
-		while (getline(file, str)) {
-			for (int j = 1; j < 9; j++) {
-				board[i][j] = str[j-1];
-			}
-			i++;
-		}
 
-		char b = '1';
-		for (i = 1; i < 9; i++) {
-			board[i][0] = b;
-			board[0][i] = b;
-			b++;
-
-		}
-
-		file.close();
-	}
-
-	void writeFile() {
-		ofstream myfile("board.txt");
-		if (myfile.is_open())
-		{
-			for (int i = 1; i < 9; i++) {
-				string str = "";
-				for (int j = 1; j < 9; j++) {
-					str += board[i][j];
-				}
-				myfile << str << endl;
-			}
-			myfile.close();
-		}
-	}
 
 	void print() {
 		for (int i = 0; i < 9; i++) {
@@ -535,7 +499,67 @@ public:
 
 	}
 
+void GetHumanMove2()
+	{
+		int row, col;
+		bool illegal_move;
 
+		// Make sure there is a legal move that can be made
+		if (1)
+		{
+			do
+			{
+				illegal_move = false;
+
+				cout << "Row? ";
+				cin >> row;
+				while (row < 0 || row > ROWS)
+				{
+					cout << "Please select a row between 0 and " << (ROWS) << ".\n";
+					cout << "Row? ";
+					cin >> row;
+				}
+
+				cout << "Col? ";
+				cin >> col;
+				while (col < 0 || col > COLS)
+				{
+					cout << "Please select a column between 0 and " << (COLS) << ".\n";
+					cout << "Col? ";
+					cin >> col;
+				}
+
+				if (board[row][col] != ' ')
+				{
+					cout << "Please select an empty row and column.\n";
+					illegal_move = 1;
+				}
+				else
+				{
+					int discs_flipped = PlaceDisc(row, col, HUMAN2_PLAYER, board);
+					if (discs_flipped == 0)
+					{
+						cout << "Illegal move.\n";
+						illegal_move = true;
+					}
+					else if (discs_flipped == 1)
+						cout << "\nYou flipped 1 disc.\n\n";
+					else
+						cout << "\nYou flipped " << discs_flipped << " discs.\n\n";
+				}
+			} while (illegal_move);
+		}
+
+
+
+
+		//move is not possbile !!!!
+		else
+		{
+
+		}
+
+	}
 
 	//minimax for computer move !!!!!! //
 
@@ -742,14 +766,14 @@ public:
 						bestMoveScore = tempMoveScore;
 						bestMove.row = i;
 						bestMove.coloumn = j;
-                        cout<<"i:"<<i<<" j:"<<j<<endl;
+
 					}
 					else if (tempMoveScore > bestMoveScore && secretChoise==2) {
 
 						bestMoveScore = tempMoveScore;
 						bestMove.row = i;
 						bestMove.coloumn = j;
-                        cout<<"i:"<<i<<" j:"<<j<<endl;
+
 					}
 					//recover previous AI board !! //
 					for (int i = 0; i < 9; i++) {
@@ -841,13 +865,13 @@ public:
 						bestMoveScore = tempMove;
 						bestMove.row = i;
 						bestMove.coloumn = j;
-						cout<<"i:"<<i<<" j:"<<j<<endl;
+
 					}
 					else if (tempMove < bestMoveScore &&secretChoise==1) {
 						bestMoveScore = tempMove;
 						bestMove.row = i;
 						bestMove.coloumn = j;
-						cout<<"i:"<<i<<" j:"<<j<<endl;
+
 
 
 					}
@@ -989,7 +1013,7 @@ int main() {
 	char tmp[2];
 	int x = 1;
 	while (1) {
-		cout << "Welcome to interactive OTHELLO game.\n1-Human vs Computer\n2-Computer against Computer (1 game)\n3-Computer against Computer (100 game)\nEnter your choise please:";
+		cout << "Welcome to interactive OTHELLO game.\n1-Human vs Computer\n2-Computer against Computer\n3-Human vs Human\nEnter your choise please:";
 		cin>>choice;
 
 		if (choice == 1) {
@@ -1026,6 +1050,18 @@ int main() {
 
 			}
 		}
+		else if (choice == 3) {
+			board boardObj;
+			boardObj.build();
+			boardObj.print();
+			while (1) {
+				boardObj.GetHumanMove();
+				boardObj.print();
+				boardObj.GetHumanMove2();
+				boardObj.print();
+			}
+		}
+
 
 		else {
 			cout << "Please enter valid choice. (1-3)\n\n";
